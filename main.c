@@ -48,14 +48,14 @@ uint8_t sboxify(uint8_t num)
 	return sboxTable[high_nibble * SBOX_TABLE_ROWS + low_nibble];
 }
 
-void substitutionLayer(uint8_t blockA[][BLOCK_SIZE_ROW_LENGTH], uint8_t blockB[][BLOCK_SIZE_ROW_LENGTH])
+void substitutionLayer(uint8_t blockA[][BLOCK_SIZE_ROW_LENGTH])
 {
 	int i, y = 0;
 	for (i = 0; i < BLOCK_SIZE_ROW_LENGTH; i++)
 	{
 		for (y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++)
 		{
-			blockB[i][y] = sboxify(blockA[i][y]);
+			blockA[i][y] = sboxify(blockA[i][y]);
 		}
 	}
 }
@@ -68,13 +68,10 @@ int main(int argc, char** argv)
 		{0x22, 0x66, 0xAA, 0xEE},
 		{0x33, 0x77, 0xBB, 0xFF},
 	};
-	uint8_t blockB[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH];
-	
 
-	substitutionLayer(blockA, blockB);
+	substitutionLayer(blockA);
 
 	printBlock(blockA);
-	printBlock(blockB);
 
 	return 0;
 }
