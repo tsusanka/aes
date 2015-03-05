@@ -22,7 +22,7 @@ void printBin(uint8_t x)
 	printf("\n");
 }
 
-void printBlock(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH])
+void printBlock(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
 {
 	int i, y = 0;
 	printf("----------------\n");
@@ -41,20 +41,12 @@ void printBlock(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH])
 
 int main(int argc, char** argv)
 {
-	uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH];
-	int i, y = 0;
-	uint8_t input;
-
-	printf("Enter %d bytes in hex seperated by newline: \n", BLOCK_SIZE_ROW_LENGTH * BLOCK_SIZE_ROW_LENGTH);
-
-	for (i = 0; i < BLOCK_SIZE_ROW_LENGTH; i++)
-	{
-		for (y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++)
-		{
-			scanf("%x", &input);
-			block[y][i] = input;
-		}
-	}
+	uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH] = {
+		{0x00, 0x44, 0x88, 0xCC},
+		{0x11, 0x55, 0x99, 0xDD},
+		{0x22, 0x66, 0xAA, 0xEE},
+		{0x33, 0x77, 0xBB, 0xFF},
+	};
 
 	printBlock(block);
 
