@@ -21,10 +21,21 @@ void printBin(unsigned char x)
 	printf("\n");
 }
 
-void printHex(unsigned char x)
+void printBlock(unsigned char block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH])
 {
-	printf("0x%x", x);
-	printf("\n");
+	int i, y = 0;
+	printf("----------------\n");
+
+	for (i = 0; i < BLOCK_SIZE_ROW_LENGTH; ++i)
+	{
+		printf("| ");
+		for (y = 0; y < BLOCK_SIZE_ROW_LENGTH; ++y)
+		{
+			printf("%x |", block[i][y]);
+		}
+		printf("\n");
+	}
+	printf("----------------\n");
 }
 
 int main(int argc, char** argv)
@@ -32,19 +43,20 @@ int main(int argc, char** argv)
 	unsigned char block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH];
 	int i, y = 0;
 	unsigned char input;
+	unsigned char xxx;
 
 	printf("Enter %d bytes in hex seperated by newline: \n", BLOCK_SIZE_ROW_LENGTH * BLOCK_SIZE_ROW_LENGTH);
 
-	for (i = 0; i < BLOCK_SIZE_ROW_LENGTH; ++i)
+	for (i = 0; i < BLOCK_SIZE_ROW_LENGTH; i++)
 	{
-		for (y = 0; y < BLOCK_SIZE_ROW_LENGTH; ++y)
+		for (y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++)
 		{
 			scanf("%x", &input);
 			block[y][i] = input;
-			printf("Read: %x \n", block[i][y]);
 		}
 	}
 
+	printBlock(block);
 
 	return 0;
 }
