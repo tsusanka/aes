@@ -7,8 +7,10 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include "tables.h"
 
 #define BLOCK_SIZE_ROW_LENGTH 4
+
 
 
 void printBin(uint8_t x)
