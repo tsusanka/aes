@@ -14,7 +14,7 @@
 
 void printBin(uint8_t x)
 {
-	int i; 
+	int i;
 	for (i = (sizeof(char) * 8) - 1; i >= 0; i--)
 	{
 		(x & (1<<i)) ? putchar('1') : putchar('0');
@@ -69,7 +69,7 @@ void shiftRowLeft(uint8_t block[][BLOCK_SIZE_ROW_LENGTH], int i)
 	for (y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++)
 	{
 		block[i][y] = block[i][(y+1) % 4] ;
-	} 
+	}
 
 	block[i][y-1] = temp;
 }
@@ -94,22 +94,29 @@ void matrixVectorMultiply(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LE
 {
 	uint8_t result[BLOCK_SIZE_ROW_LENGTH];
 	int i, y = 0;
+	uint8_t high_nibble;
+	uint8_t low_nibble;
+	uint8_t afterMulti;
 
-	for(i = 0; i < BLOCK_SIZE_ROW_LENGTH; i++) 
+	for(i = 0; i < BLOCK_SIZE_ROW_LENGTH; i++)
 	{
 		result[i] = 0;
-		for(y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++) 
+		for(y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++)
 		{
+		    afterMulti = block[y][blockColumn];
+		    high_nibble = afterMulti >>4 & 0x0F;
+		    low_nibble = afterMulti & 0x0F;
+
 			if (mixColumns[i][y] == 0x02)
 			{
-				// todo lookup in table2
+                afterMulti = multiply2[high_nibble * SBOX_TABLE_ROWS + low_nibble];
 			}
 			else if (mixColumns[i][y] == 0x03)
 			{
-				// todo lookup in table3
+				afterMulti = multiply3[high_nibble * SBOX_TABLE_ROWS + low_nibble];
 			}
 			// todo XOR
-			// result[i] += mixColumns[i][y] * block[y][blockColumn];
+			result[i] ^= afterMulti;
 		}
 	}
 
@@ -120,7 +127,7 @@ void matrixVectorMultiply(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LE
 	}
 }
 
-void mixColumn(uint8_t block[][BLOCK_SIZE_ROW_LENGTH]) 
+void mixColumn(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
 {
 	matrixVectorMultiply(block, 0);
 	matrixVectorMultiply(block, 1);
@@ -132,19 +139,20 @@ int main(int argc, char** argv)
 {
 	uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH] = {
 		{0x00, 0x44, 0x88, 0xCC},
-		{0x11, 0x55, 0x99, 0xDD},
-		{0x22, 0x66, 0xAA, 0xEE},
-		{0x33, 0x77, 0xBB, 0xFF},
+		{0x01, 0x55, 0x99, 0xDD},
+		{0x02, 0x66, 0xAA, 0xEE},
+		{0x03, 0x77, 0xBB, 0xFF},
 	};
 
-	substitutionLayer(block);
-	printBlock(block);
+	//substitutionLayer(block);
+	//printBlock(block);
 
-	shiftRowsSublayer(block);
+	//shiftRowsSublayer(block);
 	printBlock(block);
 
 	matrixVectorMultiply(block, 0);
 	printBlock(block);
+
 
 	return 0;
 }
