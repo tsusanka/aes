@@ -6,11 +6,12 @@
  **/
 
 #include <stdio.h>
+#include <stdint.h>
 
 #define BLOCK_SIZE_ROW_LENGTH 4
 
 
-void printBin(unsigned char x)
+void printBin(uint8_t x)
 {
 	int i; 
 	for (i = (sizeof(char) * 8) - 1; i >= 0; i--)
@@ -21,7 +22,7 @@ void printBin(unsigned char x)
 	printf("\n");
 }
 
-void printBlock(unsigned char block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH])
+void printBlock(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH])
 {
 	int i, y = 0;
 	printf("----------------\n");
@@ -40,10 +41,10 @@ void printBlock(unsigned char block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH
 
 int main(int argc, char** argv)
 {
-	unsigned char block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH];
+	uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH];
 	int i, y = 0;
-	unsigned char input;
-	unsigned char xxx;
+	uint8_t input;
+	uint8_t xxx;
 
 	printf("Enter %d bytes in hex seperated by newline: \n", BLOCK_SIZE_ROW_LENGTH * BLOCK_SIZE_ROW_LENGTH);
 
@@ -51,7 +52,7 @@ int main(int argc, char** argv)
 	{
 		for (y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++)
 		{
-			scanf("%x", &input);
+			printf("%d ", scanf("%x", &input));
 			block[y][i] = input;
 		}
 	}
