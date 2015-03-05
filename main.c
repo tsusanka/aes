@@ -85,15 +85,14 @@ void shiftRowsSublayer(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
 }
 
 /**
- * @var input  the whole block we're working on
- * @var inputColumn  which column in `input` is beeing multiplied
+ * @var block  the whole block we're working on
+ * @var blockColumn  which column in `block` is beeing multiplied
  *
  * @const mixColumns  constant located in tables.h
  */
-void matrixVectorMultiply(uint8_t input[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH], int inputColumn)
+void matrixVectorMultiply(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH], int blockColumn)
 {
 	uint8_t result[BLOCK_SIZE_ROW_LENGTH];
-
 	int i, y = 0;
 
 	for(i = 0; i < BLOCK_SIZE_ROW_LENGTH; i++) 
@@ -101,8 +100,14 @@ void matrixVectorMultiply(uint8_t input[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LE
 		result[i] = 0;
 		for(y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++) 
 		{
-			result[i] += mixColumns[i][y] * input[y][inputColumn];
+			result[i] += mixColumns[i][y] * block[y][blockColumn];
 		}
+	}
+
+	// todo: is this needed?
+	for (i = 0; i < BLOCK_SIZE_ROW_LENGTH; i++)
+	{
+		block[i][blockColumn] = result[i];
 	}
 }
 
@@ -123,14 +128,14 @@ int main(int argc, char** argv)
 		{0x33, 0x77, 0xBB, 0xFF},
 	};
 
-	// substitutionLayer(block);
-	// printBlock(block);
+	substitutionLayer(block);
+	printBlock(block);
 
-	// shiftRowsSublayer(block);
-	// printBlock(block);
+	shiftRowsSublayer(block);
+	printBlock(block);
 
 	matrixVectorMultiply(block, 0);
-	// printBlock(block);
+	printBlock(block);
 
 	return 0;
 }
