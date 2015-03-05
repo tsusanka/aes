@@ -8,14 +8,20 @@
 #include <stdio.h>
 
  
-void showbits(unsigned int x)
+void printBin(char x)
 {
 	int i; 
-	for (i = (sizeof(int) * 8) - 1; i >= 0; i--)
+	for (i = (sizeof(char) * 8) - 1; i >= 0; i--)
 	{
-		(x&(1<<i)) ? putchar('1') : putchar('0');
+		(x & (1<<i)) ? putchar('1') : putchar('0');
 	}
 
+	printf("\n");
+}
+
+void printHex(char x)
+{
+	printf("0x%x", x);
 	printf("\n");
 }
 
