@@ -100,7 +100,16 @@ void matrixVectorMultiply(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LE
 		result[i] = 0;
 		for(y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++) 
 		{
-			result[i] += mixColumns[i][y] * block[y][blockColumn];
+			if (mixColumns[i][y] == 0x02)
+			{
+				// todo lookup in table2
+			}
+			else if (mixColumns[i][y] == 0x03)
+			{
+				// todo lookup in table3
+			}
+			// todo XOR
+			// result[i] += mixColumns[i][y] * block[y][blockColumn];
 		}
 	}
 
