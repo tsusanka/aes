@@ -44,7 +44,6 @@ int main(int argc, char** argv)
 	uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH];
 	int i, y = 0;
 	uint8_t input;
-	uint8_t xxx;
 
 	printf("Enter %d bytes in hex seperated by newline: \n", BLOCK_SIZE_ROW_LENGTH * BLOCK_SIZE_ROW_LENGTH);
 
@@ -52,7 +51,7 @@ int main(int argc, char** argv)
 	{
 		for (y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++)
 		{
-			printf("%d ", scanf("%x", &input));
+			scanf("%x", &input);
 			block[y][i] = input;
 		}
 	}
