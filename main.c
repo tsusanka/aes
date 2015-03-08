@@ -135,6 +135,23 @@ void mixColumnSublayer(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
 	matrixVectorMultiply(block, 4);
 }
 
+/**
+*   For now.
+*
+**/
+void keyAdditionLayer(uint8_t key[], uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
+{
+    int i,y;
+    for(i = 0; i < BLOCK_SIZE_ROW_LENGTH; i++)
+    {
+        for(y = 0; u < BLOCK_SIZE_ROW_LENGTH; y++)
+        {
+            block[y][i] ^= key[i+y];
+        }
+    }
+}
+
+
 int main(int argc, char** argv)
 {
 	uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH] = {
