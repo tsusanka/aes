@@ -144,9 +144,9 @@ void keyAdditionLayer(uint8_t key[], uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
     int i,y;
     for(i = 0; i < BLOCK_SIZE_ROW_LENGTH; i++)
     {
-        for(y = 0; u < BLOCK_SIZE_ROW_LENGTH; y++)
+        for(y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++)
         {
-            block[y][i] ^= key[i+y];
+            block[y][i] ^= key[BLOCK_SIZE_ROW_LENGTH*i+y];
         }
     }
 }
@@ -166,6 +166,10 @@ int main(int argc, char** argv)
 	};
 
 	printf("Default matrix:\n");
+	printBlock(block);
+
+	printf("0. Key addition:\n");
+	keyAdditionLayer(key, block);
 	printBlock(block);
 
 	substitutionLayer(block);
