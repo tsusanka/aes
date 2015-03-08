@@ -127,7 +127,7 @@ void matrixVectorMultiply(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LE
 	}
 }
 
-void mixColumn(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
+void mixColumnSublayer(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
 {
 	matrixVectorMultiply(block, 0);
 	matrixVectorMultiply(block, 1);
@@ -138,10 +138,10 @@ void mixColumn(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
 int main(int argc, char** argv)
 {
 	uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH] = {
-		{0x00, 0x44, 0x88, 0xCC},
-		{0x01, 0x55, 0x99, 0xDD},
-		{0x02, 0x66, 0xAA, 0xEE},
-		{0x03, 0x77, 0xBB, 0xFF},
+		{0x25, 0x44, 0x88, 0xCC},
+		{0x25, 0x55, 0x99, 0xDD},
+		{0x25, 0x66, 0xAA, 0xEE},
+		{0x25, 0x77, 0xBB, 0xFF},
 	};
 
 	//substitutionLayer(block);
@@ -151,6 +151,7 @@ int main(int argc, char** argv)
 	printBlock(block);
 
 	matrixVectorMultiply(block, 0);
+	//mixColumnSublayer(block);
 	printBlock(block);
 
 

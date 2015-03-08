@@ -25,10 +25,10 @@ static const uint8_t sboxTable[256] =
 
 static uint8_t mixColumns[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH] = 
 {
-  {01,03,01,01},
-  {01,02,03,01},
-  {01,01,02,03},
-  {03,01,01,02}
+  {0x02,0x03,0x01,0x01},
+  {0x01,0x02,0x03,0x01},
+  {0x01,0x01,0x02,0x03},
+  {0x03,0x01,0x01,0x02}
 };
 
 static const uint8_t multiply2[256] =
