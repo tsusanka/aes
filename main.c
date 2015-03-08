@@ -154,7 +154,6 @@ void matrixVectorMultiply(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LE
  */
 void g(uint8_t subW[SUB_W_LENGTH], w_t * tmp, int iteration)
 {
-    printf("xx g: %d xx", iteration);
 	assert(iteration >= 1 && iteration <= 10);
 
 	tmp->subW[0] = sboxify(subW[1]);
@@ -170,7 +169,7 @@ void mixColumnSublayer(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
 	matrixVectorMultiply(block, 0);
 	matrixVectorMultiply(block, 1);
 	matrixVectorMultiply(block, 2);
-	matrixVectorMultiply(block, 4);
+	matrixVectorMultiply(block, 3);
 }
 
 void keyAdditionLayer(uint8_t key[], uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
@@ -238,46 +237,41 @@ int main(int argc, char** argv)
 	keyAdditionLayer(key, block);
 	printBlock(block);
 
-    for(iteration = 1; iteration < NUM_OF_ITERATIONS; iteration++)
-    {
-        printf("-------------------------------\nRound %d:\n", iteration);
+	for(iteration = 1; iteration < NUM_OF_ITERATIONS; iteration++)
+	{
+		printf("-------------------------------\nRound %d:\n", iteration);
 
-        substitutionLayer(block);
-        printf("After Substitution Layer:\n");
-        printBlock(block);
+		substitutionLayer(block);
+		printf("After Substitution Layer:\n");
+		printBlock(block);
 
-        shiftRowsSublayer(block);
-        printf("After ShiftRows Sublayer:\n");
-        printBlock(block);
+		shiftRowsSublayer(block);
+		printf("After ShiftRows Sublayer:\n");
+		printBlock(block);
 
-    printf("m: xx %d xx", iteration);
-        mixColumnSublayer(block);
-    printf("m: xx %d xx", iteration);
+		mixColumnSublayer(block);
+		printf("After MixColumn Sublayer:\n");
+		printBlock(block);
 
-        printf("After MixColumn Sublayer:\n");
-        printBlock(block);
+		keySchedule(w,key,iteration);
+		keyAdditionLayer(key, block);
+		printf("After Key Addition Layer:\n");
+		printBlock(block);
+	}
 
-    printf("m: xx %d xx", iteration);
-        keySchedule(w,key,iteration);
-        keyAdditionLayer(key, block);
-        printf("After Key Addition Layer:\n");
-        printBlock(block);
+	printf("-------------------------------\nRound %d:\n", NUM_OF_ITERATIONS);
+	substitutionLayer(block);
+	printf("After Substitution Layer:\n");
+	printBlock(block);
 
-    }
+	shiftRowsSublayer(block);
+	printf("After ShiftRows Sublayer:\n");
+	printBlock(block);
 
-        printf("-------------------------------\nRound %d:\n", NUM_OF_ITERATIONS);
-        substitutionLayer(block);
-        printf("After Substitution Layer:\n");
-        printBlock(block);
-
-        shiftRowsSublayer(block);
-        printf("After ShiftRows Sublayer:\n");
-        printBlock(block);
-
-        keySchedule(w,key,NUM_OF_ITERATIONS);
-        keyAdditionLayer(key, block);
-        printf("After Key Addition Layer:\n");
-        printBlock(block);
+	keySchedule(w,key,NUM_OF_ITERATIONS);
+	keyAdditionLayer(key, block);
+	printf("After Key Addition Layer:\n");
+	printBlock(block);
 
 	return 0;
 }
