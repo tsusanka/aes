@@ -115,7 +115,6 @@ void matrixVectorMultiply(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LE
 			{
 				afterMulti = multiply3[high_nibble * SBOX_TABLE_ROWS + low_nibble];
 			}
-			// todo XOR
 			result[i] ^= afterMulti;
 		}
 	}
