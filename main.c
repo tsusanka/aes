@@ -127,6 +127,37 @@ void matrixVectorMultiply(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LE
 	}
 }
 
+uint8_t RC(uint8_t i)
+{
+	if (i == 10)
+	{
+		return 0x36;
+	}
+	return i;
+}
+
+/**
+ *
+ * The function g() rotates its four input bytes,
+ * performs a byte-wise S-Box substitution, and adds a round coefficient RC to the first one.
+ *
+ */
+void g(uint8_t *a, uint8_t *b, uint8_t *c, uint8_t *d, uint8_t round)
+{
+	int tmp = *a;
+	*a = *b;
+	*b = *c;
+	*c = *d;
+	*d = tmp;
+
+	*a = sboxify(*a);
+	*b = sboxify(*b);
+	*c = sboxify(*c);
+	*d = sboxify(*d);
+
+	*a = *a ^ RC(round);
+}
+
 void mixColumnSublayer(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
 {
 	matrixVectorMultiply(block, 0);
