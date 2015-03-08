@@ -12,7 +12,7 @@
 
 #define BLOCK_SIZE_ROW_LENGTH 4
 #define KEY_LENGTH 16
-
+#define W_SIZE 44
 
 void printBin(uint8_t x)
 {
@@ -172,6 +172,26 @@ void keyAdditionLayer(uint8_t key[], uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
     }
 }
 
+void keySchedule(uint8_t W[W_SIZE], uint8_t key[KEY_LENGTH])
+{
+    int i;
+	for(i = 0; i < KEY_LENGTH; i++)
+    {
+        W[i] = key[i];
+    }
+
+	/*uint8_t tmpA = W[0];
+	uint8_t tmpB = W[1];
+	uint8_t tmpC = W[2];
+	uint8_t tmpD = W[3];
+
+	W[0] = W[4*4];
+	*a = *b;
+	*b = *c;
+	*c = *d;
+	*d = tmp;*/
+}
+
 int main(int argc, char** argv)
 {
 	uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH] = {
@@ -184,6 +204,9 @@ int main(int argc, char** argv)
 	uint8_t key[KEY_LENGTH] = {
 		0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x00
 	};
+
+	uint8_t W[W_SIZE];
+
 
 	// uint8_t a, b, c,d =1;
 	// g(&a,&b,&c,&d, 1);
