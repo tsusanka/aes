@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <assert.h>
 #include "tables.h"
 
 #define BLOCK_SIZE_ROW_LENGTH 4
@@ -127,23 +128,16 @@ void matrixVectorMultiply(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LE
 	}
 }
 
-uint8_t RC(uint8_t i)
-{
-	if (i == 10)
-	{
-		return 0x36;
-	}
-	return i;
-}
-
 /**
  *
  * The function g() rotates its four input bytes,
  * performs a byte-wise S-Box substitution, and adds a round coefficient RC to the first one.
  *
  */
-void g(uint8_t *a, uint8_t *b, uint8_t *c, uint8_t *d, uint8_t round)
+void g(uint8_t *a, uint8_t *b, uint8_t *c, uint8_t *d, uint8_t i)
 {
+	assert(i >= 1 && i <= 10);
+
 	int tmp = *a;
 	*a = *b;
 	*b = *c;
@@ -155,7 +149,7 @@ void g(uint8_t *a, uint8_t *b, uint8_t *c, uint8_t *d, uint8_t round)
 	*c = sboxify(*c);
 	*d = sboxify(*d);
 
-	*a = *a ^ RC(round);
+	*a = *a ^ RC[i];
 }
 
 void mixColumnSublayer(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
@@ -178,7 +172,6 @@ void keyAdditionLayer(uint8_t key[], uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
     }
 }
 
-
 int main(int argc, char** argv)
 {
 	uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH] = {
@@ -191,6 +184,9 @@ int main(int argc, char** argv)
 	uint8_t key[KEY_LENGTH] = {
 		0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x00
 	};
+
+	// uint8_t a, b, c,d =1;
+	// g(&a,&b,&c,&d, 1);
 
 	printf("Default matrix:\n");
 	printBlock(block);
