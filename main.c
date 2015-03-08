@@ -137,22 +137,26 @@ void mixColumnSublayer(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
 int main(int argc, char** argv)
 {
 	uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LENGTH] = {
-		{0x25, 0x44, 0x88, 0xCC},
-		{0x25, 0x55, 0x99, 0xDD},
-		{0x25, 0x66, 0xAA, 0xEE},
-		{0x25, 0x77, 0xBB, 0xFF},
+		{0x01, 0x44, 0x88, 0xCC},
+		{0x02, 0x55, 0x99, 0xDD},
+		{0x03, 0x66, 0xAA, 0xEE},
+		{0x04, 0x77, 0xBB, 0xFF},
 	};
 
-	//substitutionLayer(block);
-	//printBlock(block);
-
-	//shiftRowsSublayer(block);
+	printf("Default matrix:\n");
 	printBlock(block);
 
-	matrixVectorMultiply(block, 0);
-	//mixColumnSublayer(block);
+	substitutionLayer(block);
+	printf("After Substitution Layer:\n");
 	printBlock(block);
 
+	shiftRowsSublayer(block);
+	printf("After ShiftRows Sublayer:\n");
+	printBlock(block);
+
+	mixColumnSublayer(block);
+	printf("After MixColumn Sublayer:\n");
+	printBlock(block);
 
 	return 0;
 }
