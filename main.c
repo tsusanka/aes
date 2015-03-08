@@ -13,10 +13,11 @@
 #define BLOCK_SIZE_ROW_LENGTH 4
 #define KEY_LENGTH 16
 #define W_SIZE 44
+#define SUB_W_LENGTH 4
 
 typedef struct w
 {
-	uint8_t subW[4];
+	uint8_t subW[SUB_W_LENGTH];
 } w_t;
 
 void printBin(uint8_t x)
@@ -150,22 +151,16 @@ void matrixVectorMultiply(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LE
  * performs a byte-wise S-Box substitution, and adds a round coefficient RC to the first one.
  *
  */
-void g(uint8_t *a, uint8_t *b, uint8_t *c, uint8_t *d, uint8_t i)
+void g(uint8_t subW[SUB_W_LENGTH], w_t * tmp, int iteration)
 {
-	assert(i >= 1 && i <= 10);
+	assert(iteration >= 1 && iteration <= 10);
 
-	int tmp = *a;
-	*a = *b;
-	*b = *c;
-	*c = *d;
-	*d = tmp;
+	tmp->subW[0] = sboxify(subW[1]);
+	tmp->subW[1] = sboxify(subW[2]);
+	tmp->subW[2] = sboxify(subW[3]);
+	tmp->subW[3] = sboxify(subW[0]);
 
-	*a = sboxify(*a);
-	*b = sboxify(*b);
-	*c = sboxify(*c);
-	*d = sboxify(*d);
-
-	*a = *a ^ RC[i];
+	tmp->subW[0] ^= RC[iteration];
 }
 
 void mixColumnSublayer(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
@@ -188,24 +183,26 @@ void keyAdditionLayer(uint8_t key[], uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
     }
 }
 
-void keySchedule(w_t w[W_SIZE], uint8_t key[KEY_LENGTH])
+void keySchedule(w_t w[W_SIZE], uint8_t key[KEY_LENGTH], int iteration)
 {
 	int i;
 	for(i = 0; i < KEY_LENGTH; i++)
 	{
-		w[i].subW[] = key[i]; // todo
+		w[i / 4].subW[i % 4] = key[i];
 	}
 
-	/*uint8_t tmpA = W[0];
-	uint8_t tmpB = W[1];
-	uint8_t tmpC = W[2];
-	uint8_t tmpD = W[3];
+	printW(w);
 
-	W[0] = W[4*4];
-	*a = *b;
-	*b = *c;
-	*c = *d;
-		*d = tmp;*/
+	w_t tmp;
+	g(w[3].subW, &tmp, iteration);
+
+	for (i = 0; i < SUB_W_LENGTH; ++i)
+	{
+		w[0].subW[i] ^= tmp.subW[i];
+		w[1].subW[i] ^= w[0].subW[i];
+		w[2].subW[i] ^= w[1].subW[i];
+		w[3].subW[i] ^= w[2].subW[i];
+	}
 }
 
 int main(int argc, char** argv)
@@ -222,11 +219,6 @@ int main(int argc, char** argv)
 	};
 
 	w_t w[43];
-	w[0].subW[0] = 12;
-	w[0].subW[1] = 13;
-	w[0].subW[3] = 15;
-	printW(w);
-return 2;
 
 	// uint8_t a, b, c,d =1;
 	// g(&a,&b,&c,&d, 1);
