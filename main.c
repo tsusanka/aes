@@ -10,6 +10,8 @@
 #include <assert.h>
 #include "tables.h"
 
+#define DEBUG 0
+
 #define BLOCK_SIZE_ROW_LENGTH 4
 #define KEY_LENGTH 16
 #define W_SIZE 4
@@ -47,6 +49,21 @@ void printBlock(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
 		printf("\n");
 	}
 	printf("----------------\n");
+}
+
+void printResult(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
+{
+	int i, y = 0;
+	printf("Result: ");
+
+	for (i = 0; i < BLOCK_SIZE_ROW_LENGTH; ++i)
+	{
+		for (y = 0; y < BLOCK_SIZE_ROW_LENGTH; ++y)
+		{
+			printf("%02X", block[i][y]);
+		}
+	}
+	printf("\n");
 }
 
 void printW(w_t w[W_SIZE])
@@ -126,13 +143,13 @@ void matrixVectorMultiply(uint8_t block[BLOCK_SIZE_ROW_LENGTH][BLOCK_SIZE_ROW_LE
 		result[i] = 0;
 		for(y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++)
 		{
-		    afterMulti = block[y][blockColumn];
-		    high_nibble = afterMulti >>4 & 0x0F;
-		    low_nibble = afterMulti & 0x0F;
+			afterMulti = block[y][blockColumn];
+			high_nibble = afterMulti >>4 & 0x0F;
+			low_nibble = afterMulti & 0x0F;
 
 			if (mixColumns[i][y] == 0x02)
 			{
-                afterMulti = multiply2[high_nibble * SBOX_TABLE_ROWS + low_nibble];
+				afterMulti = multiply2[high_nibble * SBOX_TABLE_ROWS + low_nibble];
 			}
 			else if (mixColumns[i][y] == 0x03)
 			{
@@ -177,14 +194,14 @@ void mixColumnSublayer(uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
 
 void keyAdditionLayer(uint8_t key[], uint8_t block[][BLOCK_SIZE_ROW_LENGTH])
 {
-    int i,y;
-    for(i = 0; i < BLOCK_SIZE_ROW_LENGTH; i++)
-    {
-        for(y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++)
-        {
-            block[y][i] ^= key[BLOCK_SIZE_ROW_LENGTH*i+y];
-        }
-    }
+	int i,y;
+	for(i = 0; i < BLOCK_SIZE_ROW_LENGTH; i++)
+	{
+		for(y = 0; y < BLOCK_SIZE_ROW_LENGTH; y++)
+		{
+			block[y][i] ^= key[BLOCK_SIZE_ROW_LENGTH*i+y];
+		}
+	}
 }
 
 void keySchedule(w_t w[W_SIZE], uint8_t key[KEY_LENGTH], int iteration)
@@ -194,8 +211,6 @@ void keySchedule(w_t w[W_SIZE], uint8_t key[KEY_LENGTH], int iteration)
 	{
 		w[i / 4].subW[i % 4] = key[i];
 	}
-
-    printf("kS: xx %d xx", iteration);
 
 	w_t tmp;
 	g(w[3].subW, &tmp, iteration);
@@ -233,48 +248,51 @@ int main(int argc, char** argv)
 	w_t w[W_SIZE];
 	int iteration = 0;
 
-	printf("Default matrix:\n");
-	printBlock(block);
+	if (DEBUG) printf("Default matrix:\n");
+	if (DEBUG) printBlock(block);
 
-	printf("0. Key addition:\n");
+	if (DEBUG) printf("Key addition:\n");
 	keyAdditionLayer(key, block);
-	printBlock(block);
+	if (DEBUG) printBlock(block);
 
 	for(iteration = 1; iteration < NUM_OF_ITERATIONS; iteration++)
 	{
-		printf("-------------------------------\nRound %d:\n", iteration);
+		if (DEBUG) printf("-----------------------");
+		if (DEBUG) printf("Round %d:\n", iteration);
 
 		substitutionLayer(block);
-		printf("After Substitution Layer:\n");
-		printBlock(block);
+		if (DEBUG) printf("After Substitution Layer:\n");
+		if (DEBUG) printBlock(block);
 
 		shiftRowsSublayer(block);
-		printf("After ShiftRows Sublayer:\n");
-		printBlock(block);
+		if (DEBUG) printf("After ShiftRows Sublayer:\n");
+		if (DEBUG) printBlock(block);
 
 		mixColumnSublayer(block);
-		printf("After MixColumn Sublayer:\n");
-		printBlock(block);
+		if (DEBUG) printf("After MixColumn Sublayer:\n");
+		if (DEBUG) printBlock(block);
 
 		keySchedule(w,key,iteration);
 		keyAdditionLayer(key, block);
-		printf("After Key Addition Layer:\n");
-		printBlock(block);
+		if (DEBUG) printf("After Key Addition Layer:\n");
+		if (DEBUG) printBlock(block);
 	}
 
-	printf("-------------------------------\nRound %d:\n", NUM_OF_ITERATIONS);
+	if (DEBUG) printf("-------------------------------\nRound %d:\n", NUM_OF_ITERATIONS);
 	substitutionLayer(block);
-	printf("After Substitution Layer:\n");
-	printBlock(block);
+	if (DEBUG) printf("After Substitution Layer:\n");
+	if (DEBUG) printBlock(block);
 
 	shiftRowsSublayer(block);
-	printf("After ShiftRows Sublayer:\n");
-	printBlock(block);
+	if (DEBUG) printf("After ShiftRows Sublayer:\n");
+	if (DEBUG) printBlock(block);
 
 	keySchedule(w,key,NUM_OF_ITERATIONS);
 	keyAdditionLayer(key, block);
-	printf("After Key Addition Layer:\n");
-	printBlock(block);
+	if (DEBUG) printf("After Key Addition Layer:\n");
+	if (DEBUG) printBlock(block);
+
+	printResult(block);
 
 	return 0;
 }
